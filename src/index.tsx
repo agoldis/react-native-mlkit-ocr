@@ -56,7 +56,7 @@ type MKLBlock = {
   bounding: Bounding;
 };
 
-type MlkitOcrResult = MKLBlock[];
+export type MlkitOcrResult = MKLBlock[];
 
 type MlkitOcrModule = {
   detectFromUri(uri: string): Promise<MlkitOcrResult>;
