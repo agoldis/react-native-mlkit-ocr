@@ -1,6 +1,6 @@
 # react-native-mlkit-ocr
 
-Google on-device ML kit for RN
+Google on-device MLKit text recognition for React Native
 
 ## Installation
 
@@ -11,11 +11,12 @@ npm install react-native-mlkit-ocr
 ## Usage
 
 ```js
-import MlkitOcr from "react-native-mlkit-ocr";
+import MlkitOcr from 'react-native-mlkit-ocr';
 
 // ...
 
-const result = await MlkitOcr.multiply(3, 7);
+const resultFromUri = await MlkitOcr.detectFromUri(uri);
+const resultFromFile = await MlkitOcr.detectFromFile(path);
 ```
 
 ## Contributing
