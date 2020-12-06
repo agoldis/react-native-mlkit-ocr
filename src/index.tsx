@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 // https://developers.google.com/ml-kit/reference/android
 
-type Point = {
+export type Point = {
   x: number;
   y: number;
 };
@@ -12,13 +12,13 @@ type Point = {
  * point relative to the image in the default
  * coordinate space.
  **/
-type CornerPoints = Array<Point | null>;
+export type CornerPoints = Array<Point | null>;
 
 /**
  * The rectangle that contains the text block / line / element
  * relative to the image in the default coordinate space.
  */
-type Bounding = {
+export type Bounding = {
   left: number;
   top: number;
   height: number;
@@ -30,7 +30,7 @@ type Bounding = {
  * A text element is roughly equivalent to
  * a space-separated word in most Latin-script languages.
  */
-type MLKTextElement = {
+export type MLKTextElement = {
   text: string;
   cornerPoints: CornerPoints;
   bounding: Bounding;
@@ -39,7 +39,7 @@ type MLKTextElement = {
 /**
  *  A text line recognized in an image that consists of an array of elements.
  * */
-type MLKTextLine = {
+export type MLKTextLine = {
   text: string;
   elements: Array<MLKTextElement>;
   cornerPoints: CornerPoints;
@@ -49,14 +49,14 @@ type MLKTextLine = {
 /**
  * A text block recognized in an image that consists of an array of text lines.
  */
-type MKLBlock = {
+export type MKLBlock = {
   text: string;
   lines: MLKTextLine[];
   cornerPoints: CornerPoints;
   bounding: Bounding;
 };
 
-type MlkitOcrResult = MKLBlock[];
+export type MlkitOcrResult = MKLBlock[];
 
 type MlkitOcrModule = {
   detectFromUri(uri: string): Promise<MlkitOcrResult>;
