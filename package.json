@@ -30,6 +30,9 @@
     "bootstrap": "yarn example && yarn && yarn pods"
   },
   "keywords": [
+    "mlkit",
+    "ocr",
+    "text-recognition",
     "react-native",
     "ios",
     "android"
