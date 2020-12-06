@@ -3,6 +3,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTLog.h>
 
+#import <CoreGraphics/CoreGraphics.h>
 #import <GoogleMLKit/MLKit.h>
 
 @implementation MlkitOcr
@@ -10,6 +11,34 @@
 RCT_EXPORT_MODULE()
 
 static NSString *const detectionNoResultsMessage = @"Something went wrong";
+
+
+
+NSMutableArray* getCornerPoints(NSArray *cornerPoints) {
+    NSMutableArray *result = [NSMutableArray array];
+    
+    if (cornerPoints == nil) {
+        return result;
+    }
+    for (NSValue  *point in cornerPoints) {
+        NSMutableDictionary *resultPoint = [NSMutableDictionary dictionary];
+        [resultPoint setObject:[NSNumber numberWithFloat:point.CGPointValue.x] forKey:@"x"];
+        [resultPoint setObject:[NSNumber numberWithFloat:point.CGPointValue.y] forKey:@"y"];
+        [result addObject:resultPoint];
+    }
+    return result;
+}
+
+
+NSDictionary* getBounding(CGRect frame) {
+    return @{
+       @"top": @(frame.origin.y),
+       @"left": @(frame.origin.x),
+       @"width": @(frame.size.width),
+       @"height": @(frame.size.height)
+   };
+}
+
 
 NSMutableArray* prepareOutput(MLKText *result) {
     NSMutableArray *output = [NSMutableArray array];
@@ -21,38 +50,23 @@ NSMutableArray* prepareOutput(MLKText *result) {
             for (MLKTextElement *element in line.elements) {
                 NSMutableDictionary *e = [NSMutableDictionary dictionary];
                 e[@"text"] = element.text;
-                e[@"cornerPoints"] = element.cornerPoints;
-                e[@"bounding"] = @{
-                                   @"top": @(element.frame.origin.y),
-                                   @"left": @(element.frame.origin.x),
-                                   @"width": @(element.frame.size.width),
-                                   @"height": @(element.frame.size.height)
-                                   };
+                e[@"cornerPoints"] = getCornerPoints(element.cornerPoints);
+                e[@"bounding"] = getBounding(element.frame);
                 [lineElements addObject:e];
             }
             
             NSMutableDictionary *l = [NSMutableDictionary dictionary];
             l[@"text"] = line.text;
-            l[@"cornerPoints"] = line.cornerPoints;
+            l[@"cornerPoints"] = getCornerPoints(line.cornerPoints);
             l[@"elements"] = lineElements;
-            l[@"bounding"] = @{
-                               @"top": @(line.frame.origin.y),
-                               @"left": @(line.frame.origin.x),
-                               @"width": @(line.frame.size.width),
-                               @"height": @(line.frame.size.height)
-                               };
+            l[@"bounding"] = getBounding(line.frame);
             [blockElements addObject:l];
         }
         
         NSMutableDictionary *b = [NSMutableDictionary dictionary];
         b[@"text"] = block.text;
-        b[@"cornerPoints"] = block.cornerPoints;
-        b[@"bounding"] = @{
-                           @"top": @(block.frame.origin.y),
-                           @"left": @(block.frame.origin.x),
-                           @"width": @(block.frame.size.width),
-                           @"height": @(block.frame.size.height)
-                           };
+        b[@"cornerPoints"] = getCornerPoints(block.cornerPoints);
+        b[@"bounding"] = getBounding(block.frame);
         b[@"lines"] = blockElements;
         [output addObject:b];
     }
