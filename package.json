@@ -1,6 +1,6 @@
 {
   "name": "react-native-mlkit-ocr",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Google on-device MLKit text recognition for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -139,7 +139,12 @@
     "targets": [
       "commonjs",
       "module",
-      ["typescript", { "project": "tsconfig.build.json" }]
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
     ]
   }
 }
