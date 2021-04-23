@@ -1,12 +1,19 @@
 # react-native-mlkit-ocr
+<p align="center">
+    Google on-device MLKit text recognition for React Native
+</p>
 
-Google on-device MLKit text recognition for React Native
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/1637928/115913726-d2a97c00-a425-11eb-9c6a-6d19b974ee81.gif">
+</p>
+
 
 ## Installation
 
 ```sh
 npm install react-native-mlkit-ocr
 ```
+
 
 ## Usage
 
