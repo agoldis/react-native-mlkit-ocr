@@ -13,33 +13,36 @@ import javax.annotation.Nullable
 
 
 class MlkitOcrModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+  override fun getName(): String {
+      return "MlkitOcr"
+  }
 
-    override fun getName(): String {
-        return "MlkitOcr"
-    }
+  @ReactMethod
+  fun detectFromUri(uri: String, promise: Promise) {
+    return this.detectFromResource(uri, promise);
+  }
 
+  @ReactMethod
+  fun detectFromFile(path: String, promise: Promise) {
+    return this.detectFromResource(path, promise);
+  }
 
-
-
-
-
-    @ReactMethod
-    fun detectFromUri(uri: String, promise: Promise) {
-      val image: InputImage;
-      try {
-        image = InputImage.fromFilePath(reactApplicationContext,  Uri.parse(uri));
-        val recognizer = TextRecognition.getClient();
-        recognizer.process(image).addOnSuccessListener { visionText ->
-          promise.resolve(getDataAsArray(visionText))
-        }.addOnFailureListener { e ->
-          promise.reject(e);
-          e.printStackTrace();
-        }
-      } catch (e: Exception) {
+  private fun detectFromResource(path: String, promise: Promise) {
+    val image: InputImage;
+    try {
+      image = InputImage.fromFilePath(reactApplicationContext,  Uri.parse(path));
+      val recognizer = TextRecognition.getClient();
+      recognizer.process(image).addOnSuccessListener { visionText ->
+        promise.resolve(getDataAsArray(visionText))
+      }.addOnFailureListener { e ->
         promise.reject(e);
         e.printStackTrace();
       }
+    } catch (e: Exception) {
+      promise.reject(e);
+      e.printStackTrace();
     }
+  }
 
   private fun getCoordinates(boundingBox: Rect?): WritableMap {
     val coordinates: WritableMap = Arguments.createMap()

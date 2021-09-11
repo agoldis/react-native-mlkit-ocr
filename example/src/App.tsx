@@ -8,6 +8,7 @@ import {
   ScrollView,
   Text,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {
   ImagePickerResponse,
@@ -16,15 +17,25 @@ import {
 import MlkitOcr, { MlkitOcrResult } from 'react-native-mlkit-ocr';
 
 export default function App() {
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [result, setResult] = React.useState<MlkitOcrResult | undefined>();
   const [image, setImage] = React.useState<ImagePickerResponse | undefined>();
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       {!!result?.length && (
         <ScrollView
           contentContainerStyle={{
             alignItems: 'stretch',
+            padding: 20,
+            height: Dimensions.get('window').height,
           }}
           showsVerticalScrollIndicator
           style={styles.scroll}
@@ -37,17 +48,13 @@ export default function App() {
                   style={{
                     backgroundColor: '#ccccccaf',
                     position: 'absolute',
-                    // @ts-ignore
-                    top: fitHeight(line.bounding.top, image!.height),
-                    // @ts-ignore
-                    height: fitHeight(line.bounding.height, image!.height),
-                    // @ts-ignore
-                    left: fitWidth(line.bounding.left, image!.width),
-                    // @ts-ignore
-                    width: fitWidth(line.bounding.width, image!.width),
+                    top: fitHeight(line.bounding.top, image?.height ?? 0),
+                    height: fitHeight(line.bounding.height, image?.height ?? 0),
+                    left: fitWidth(line.bounding.left, image?.width ?? 0),
+                    width: fitWidth(line.bounding.width, image?.width ?? 0),
                   }}
                 >
-                  <Text style={{ fontSize: 8 }}>{line.text}</Text>
+                  <Text style={{ fontSize: 10 }}>{line.text}</Text>
                 </View>
               );
             });
@@ -56,7 +63,10 @@ export default function App() {
       )}
 
       <Button
-        onPress={() => launchGallery(setResult, setImage)}
+        onPress={() => {
+          setLoading(true);
+          launchGallery(setResult, setImage, setLoading);
+        }}
         title="Start"
       />
     </SafeAreaView>
@@ -75,7 +85,8 @@ function fitHeight(value: number, imageHeight: number) {
 
 function launchGallery(
   setResult: (result: MlkitOcrResult) => void,
-  setImage: (result: ImagePickerResponse) => void
+  setImage: (result: ImagePickerResponse) => void,
+  setLoading: (value: boolean) => void
 ) {
   launchImageLibrary(
     {
@@ -90,6 +101,8 @@ function launchGallery(
         setResult(await MlkitOcr.detectFromUri(response.uri));
       } catch (e) {
         console.error(e);
+      } finally {
+        setLoading(false);
       }
     }
   );
@@ -101,8 +114,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scroll: {
+    flex: 1,
     width: '100%',
-    borderColor: 'red',
-    borderWidth: 1,
+    borderColor: '#ccc',
+    borderWidth: 2,
   },
 });

@@ -13,10 +13,8 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "10.0" }
   s.source       = { :git => "https://github.com/agoldis/react-native-mlkit-ocr.git", :tag => "#{s.version}" }
 
-  
   s.source_files = "ios/**/*.{h,m,mm}"
   
-
   s.dependency "React"
-  s.dependency "GoogleMLKit/TextRecognition"
+  s.dependency "GoogleMLKit/TextRecognition", "2.2.0"
 end
