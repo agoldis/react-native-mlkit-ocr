@@ -13,7 +13,14 @@
 ```sh
 npm install react-native-mlkit-ocr
 ```
+## Post-install Steps
 
+### iOS
+Run
+
+```js
+cd ios && pod install
+```
 
 ## Usage
 
