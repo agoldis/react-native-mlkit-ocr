@@ -7,14 +7,13 @@ import com.facebook.react.bridge.*
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
-import java.io.IOException
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.lang.Exception
-import javax.annotation.Nullable
 
 
 class MlkitOcrModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
   override fun getName(): String {
-      return "MlkitOcr"
+    return "MlkitOcr"
   }
 
   @ReactMethod
@@ -30,8 +29,8 @@ class MlkitOcrModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
   private fun detectFromResource(path: String, promise: Promise) {
     val image: InputImage;
     try {
-      image = InputImage.fromFilePath(reactApplicationContext,  Uri.parse(path));
-      val recognizer = TextRecognition.getClient();
+      image = InputImage.fromFilePath(reactApplicationContext,  Uri.parse(path))
+      val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
       recognizer.process(image).addOnSuccessListener { visionText ->
         promise.resolve(getDataAsArray(visionText))
       }.addOnFailureListener { e ->
