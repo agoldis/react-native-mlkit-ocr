@@ -96,7 +96,7 @@
       "publish": true
     },
     "github": {
-      "release": true
+      "web": true
     },
     "plugins": {
       "@release-it/conventional-changelog": {
