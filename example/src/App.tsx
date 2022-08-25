@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {
-  ImagePickerResponse,
+  Asset,
   launchImageLibrary,
 } from 'react-native-image-picker';
 import MlkitOcr, { MlkitOcrResult } from 'react-native-mlkit-ocr';
@@ -19,7 +19,7 @@ import MlkitOcr, { MlkitOcrResult } from 'react-native-mlkit-ocr';
 export default function App() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [result, setResult] = React.useState<MlkitOcrResult | undefined>();
-  const [image, setImage] = React.useState<ImagePickerResponse | undefined>();
+  const [image, setImage] = React.useState<Asset | undefined>();
 
   if (loading) {
     return (
@@ -85,20 +85,20 @@ function fitHeight(value: number, imageHeight: number) {
 
 function launchGallery(
   setResult: (result: MlkitOcrResult) => void,
-  setImage: (result: ImagePickerResponse) => void,
+  setImage: (result: Asset) => void,
   setLoading: (value: boolean) => void
 ) {
   launchImageLibrary(
     {
       mediaType: 'photo',
     },
-    async (response: ImagePickerResponse) => {
-      if (!response.uri) {
+    async ({assets}) => {
+      if (!assets?.[0].uri) {
         throw new Error('oh!');
       }
       try {
-        setImage(response);
-        setResult(await MlkitOcr.detectFromUri(response.uri));
+        setImage(assets[0]);
+        setResult(await MlkitOcr.detectFromUri(assets[0].uri));
       } catch (e) {
         console.error(e);
       } finally {
