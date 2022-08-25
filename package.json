@@ -51,7 +51,7 @@
     "@release-it/conventional-changelog": "^2.0.1",
     "@types/jest": "^26.0.0",
     "@types/react": "^16.9.19",
-    "@types/react-native": "0.62.13",
+    "@types/react-native": "^0.69.5",
     "commitlint": "^8.3.5",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -146,6 +146,15 @@
           "project": "tsconfig.build.json"
         }
       ]
+    ]
+  },
+  "codegenConfig": {
+    "libraries": [
+      {
+        "name": "MlkitOcrSpec",
+        "type": "modules",
+        "jsSrcsDir": "src"
+      }
     ]
   }
 }
