@@ -1,132 +1,147 @@
+import groovy.json.JsonSlurper
+import java.nio.file.Paths
+
 buildscript {
-  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+
   def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['MlkitOcr_kotlinVersion']
+
+  ext.safeExtGet = { prop ->
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : project.properties["MlkitOcr_${prop}"]
+  }
 
   repositories {
     google()
-    jcenter()
+    gradlePluginPortal()
+    mavenCentral()
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:3.2.1'
-    // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
+}
+
+def getExtOrDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["MlkitOcr_${name}"]
+}
+
+def isNewArchitectureEnabled() {
+  return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
+static def findNodeModulePath(baseDir, packageName) {
+  def basePath = baseDir.toPath().normalize()
+  // Node's module resolution algorithm searches up to the root directory,
+  // after which the base path will be null
+  while (basePath) {
+    def candidatePath = Paths.get(basePath.toString(), "node_modules", packageName)
+    if (candidatePath.toFile().exists()) {
+      return candidatePath.toString()
+    }
+    basePath = basePath.getParent()
+  }
+  return null
+}
+
+def findNodeModulePath(packageName) {
+  // Don't start in the project dir, as its path ends with node_modules/react-native-mlkit-ocr/android
+  // we want to go two levels up, so we end up in the first_node modules and eventually
+  // search upwards if the package is not found there
+  return findNodeModulePath(projectDir.toPath().parent.parent.toFile(), packageName)
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['MlkitOcr_' + name]
-}
-
-def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['MlkitOcr_' + name]).toInteger()
+if (isNewArchitectureEnabled()) {
+  apply plugin: 'com.facebook.react'
 }
 
 android {
-  compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
-  buildToolsVersion getExtOrDefault('buildToolsVersion')
+  compileSdkVersion safeExtGet('compileSdkVersion')
+
+  // Used to override the NDK path/version on internal CI or by allowing
+  // users to customize the NDK path/version from their root project (e.g. for M1 support)
+  if (rootProject.hasProperty("ndkPath")) {
+    ndkPath rootProject.ext.ndkPath
+  }
+  if (rootProject.hasProperty("ndkVersion")) {
+    ndkVersion rootProject.ext.ndkVersion
+  }
+
   defaultConfig {
-    minSdkVersion 16
-    targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
-    versionCode 1
-    versionName "1.0"
-
+    minSdkVersion getExtOrDefault('minSdkVersion')
+    targetSdkVersion getExtOrDefault('targetSdkVersion')
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    versionCode 110
+    versionName "1.1.0"
   }
 
-  buildTypes {
-    release {
-      minifyEnabled false
-    }
-  }
-  lintOptions {
-    disable 'GradleCompatible'
-  }
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  sourceSets {
+    main {
+      if (isNewArchitectureEnabled()) {
+        java.srcDirs += ["src/newarch",
+                         "${project.buildDir}/generated/source/codegen/java"]
+      } else {
+        java.srcDirs += ["src/oldarch"]
+      }
+    }
+  }
 }
 
 repositories {
+  maven {
+    // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+    url "${rootDir}/../node_modules/react-native/android"
+  }
   mavenCentral()
-  jcenter()
   google()
-
-  def found = false
-  def defaultDir = null
-  def androidSourcesName = 'React Native sources'
-
-  if (rootProject.ext.has('reactNativeAndroidRoot')) {
-    defaultDir = rootProject.ext.get('reactNativeAndroidRoot')
-  } else {
-    defaultDir = new File(
-      projectDir,
-      '/../../../node_modules/react-native/android'
-    )
-  }
-
-  if (defaultDir.exists()) {
-    maven {
-      url defaultDir.toString()
-      name androidSourcesName
-    }
-
-    logger.info(":${project.name}:reactNativeAndroidRoot ${defaultDir.canonicalPath}")
-    found = true
-  } else {
-    def parentDir = rootProject.projectDir
-
-    1.upto(5, {
-      if (found) return true
-      parentDir = parentDir.parentFile
-
-      def androidSourcesDir = new File(
-        parentDir,
-        'node_modules/react-native'
-      )
-
-      def androidPrebuiltBinaryDir = new File(
-        parentDir,
-        'node_modules/react-native/android'
-      )
-
-      if (androidPrebuiltBinaryDir.exists()) {
-        maven {
-          url androidPrebuiltBinaryDir.toString()
-          name androidSourcesName
-        }
-
-        logger.info(":${project.name}:reactNativeAndroidRoot ${androidPrebuiltBinaryDir.canonicalPath}")
-        found = true
-      } else if (androidSourcesDir.exists()) {
-        maven {
-          url androidSourcesDir.toString()
-          name androidSourcesName
-        }
-
-        logger.info(":${project.name}:reactNativeAndroidRoot ${androidSourcesDir.canonicalPath}")
-        found = true
-      }
-    })
-  }
-
-  if (!found) {
-    throw new GradleException(
-      "${project.name}: unable to locate React Native android sources. " +
-        "Ensure you have you installed React Native as a dependency in your project and try again."
-    )
-  }
 }
 
 def kotlin_version = getExtOrDefault('kotlinVersion')
 
 dependencies {
-  // noinspection GradleDynamicVersion
-  api 'com.facebook.react:react-native:+'
-  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
 
+  if (isNewArchitectureEnabled()) {
+    implementation project(":ReactAndroid")
+  } else {
+    implementation 'com.facebook.react:react-native:+'
+  }
+
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
+}
+
+if (isNewArchitectureEnabled()) {
+  react {
+    reactNativeDir = rootProject.file(findNodeModulePath(rootProject.rootDir, "react-native") ?: "../node_modules/react-native/")
+    jsRootDir = file("../src/")
+    codegenDir = rootProject.file(findNodeModulePath(rootProject.rootDir, "react-native-codegen") ?: "../node_modules/react-native-codegen/")
+    libraryName = "mlkitocr"
+    codegenJavaPackageName = "com.reactnativemlkitocr"
+  }
+
+  // Resolves "LOCAL_SRC_FILES points to a missing file, Check that libfb.so exists or that its path is correct".
+  tasks.whenTaskAdded { task ->
+    if (task.name.contains("configureCMakeDebug")) {
+      rootProject.getTasksByName("packageReactNdkDebugLibs", true).forEach {
+        task.dependsOn(it)
+      }
+    }
+    // We want to add a dependency for both configureCMakeRelease and configureCMakeRelWithDebInfo
+    if (task.name.contains("configureCMakeRel")) {
+      rootProject.getTasksByName("packageReactNdkReleaseLibs", true).forEach {
+        task.dependsOn(it)
+      }
+    }
+  }
 }
