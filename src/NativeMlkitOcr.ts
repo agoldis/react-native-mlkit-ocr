@@ -9,6 +9,4 @@ export interface Spec extends TurboModule {
 }
 
 // @ts-ignore
-export default TurboModuleRegistry.get<Spec>(
-  'MlkitOcr'
-);
+export default TurboModuleRegistry.get<Spec>('MlkitOcr');

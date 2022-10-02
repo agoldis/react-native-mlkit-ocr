@@ -11,9 +11,9 @@ type MlkitOcrModule = {
 // @ts-ignore
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
-const MlkitOcr: MlkitOcrModule = isTurboModuleEnabled ?
-  require("./NativeMlkitOcr").default :
-  NativeModules.MlkitOcr;
+const MlkitOcr: MlkitOcrModule = isTurboModuleEnabled
+  ? require('./NativeMlkitOcr').default
+  : NativeModules.MlkitOcr;
 
 const MLKit: MlkitOcrModule = {
   detectFromUri: async (uri: string) => {

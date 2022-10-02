@@ -10,10 +10,7 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import {
-  Asset,
-  launchImageLibrary,
-} from 'react-native-image-picker';
+import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import MlkitOcr, { MlkitOcrResult } from 'react-native-mlkit-ocr';
 
 export default function App() {
@@ -92,7 +89,7 @@ function launchGallery(
     {
       mediaType: 'photo',
     },
-    async ({assets}) => {
+    async ({ assets }) => {
       if (!assets?.[0].uri) {
         throw new Error('oh!');
       }
