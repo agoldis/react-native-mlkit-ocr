@@ -3442,10 +3442,10 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-image-picker@^3.0.0-vnext.4:
-  version "3.0.0-vnext.4"
-  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-3.0.0-vnext.4.tgz#47f47bf6e9768b8dd375c746a041296ad254b131"
-  integrity sha512-iNjdYsIZuBS7TNbj/ez3oiHJNPPvOvJdHpQYZQ+rrt0FR+YJyIlz4DfXmU93KsPf7AP0euF7JLrcepF8RtJNxg==
+react-native-image-picker@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-3.8.1.tgz#6e830e9b69c882ad5f1160e10592a84963a7f2c9"
+  integrity sha512-Q7qaJ7Zkt8ipIkkF+7UcuRbI0cxaNwsHBcnDLZdlpHnxuMaLhS/xp6v/om/kBYhMg6BeT+NcncynZQoKz7dQqw==
 
 react-native@0.62.2:
   version "0.62.2"
