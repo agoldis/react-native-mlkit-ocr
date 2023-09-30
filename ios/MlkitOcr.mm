@@ -12,8 +12,6 @@ RCT_EXPORT_MODULE()
 
 static NSString *const detectionNoResultsMessage = @"Something went wrong";
 
-
-
 NSMutableArray* getCornerPoints(NSArray *cornerPoints) {
     NSMutableArray *result = [NSMutableArray array];
     
@@ -74,7 +72,7 @@ NSMutableArray* prepareOutput(MLKText *result) {
 }
 
 
-RCT_REMAP_METHOD(detectFromUri, detectFromUri:(NSString *)imagePath resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(detectFromUri, detectFromUri:(NSString *)imagePath withResolver:(RCTPromiseResolveBlock) resolve withRejecter:(RCTPromiseRejectBlock) reject) {
     if (!imagePath) {
         RCTLog(@"No image uri provided");
         reject(@"wrong_arguments", @"No image uri provided", nil);
@@ -124,7 +122,7 @@ RCT_REMAP_METHOD(detectFromUri, detectFromUri:(NSString *)imagePath resolver:(RC
     
 }
 
-RCT_REMAP_METHOD(detectFromFile, detectFromFile:(NSString *)imagePath resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(detectFromFile, detectFromFile:(NSString *)imagePath withResolver:(RCTPromiseResolveBlock) resolve withRejecter:(RCTPromiseRejectBlock) reject) {
     if (!imagePath) {
         reject(@"wrong_arguments", @"No image path provided", nil);
         return;
@@ -172,5 +170,14 @@ RCT_REMAP_METHOD(detectFromFile, detectFromFile:(NSString *)imagePath resolver:(
     
 }
 
+// We won't compile this code when we build for the old architecture.
+#ifdef RCT_NEW_ARCH_ENABLED
+
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
+    return std::make_shared<facebook::react:MlkitOcrSpecJSI>(params);
+}
+#endif
 
 @end

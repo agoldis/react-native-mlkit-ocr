@@ -1,5 +1,3 @@
-import { NativeModules } from 'react-native';
-
 // https://developers.google.com/ml-kit/reference/android
 
 export type Point = {
@@ -57,29 +55,3 @@ export type MKLBlock = {
 };
 
 export type MlkitOcrResult = MKLBlock[];
-
-type MlkitOcrModule = {
-  detectFromUri(uri: string): Promise<MlkitOcrResult>;
-  detectFromFile(path: string): Promise<MlkitOcrResult>;
-};
-
-const MlkitOcr: MlkitOcrModule = NativeModules.MlkitOcr;
-
-const MLKit: MlkitOcrModule = {
-  detectFromUri: async (uri: string) => {
-    const result = await MlkitOcr.detectFromUri(uri);
-    if (!result) {
-      return [];
-    }
-    return result;
-  },
-  detectFromFile: async (path: string) => {
-    const result = await MlkitOcr.detectFromFile(path);
-    if (!result) {
-      return [];
-    }
-    return result;
-  },
-};
-
-export default MLKit;
