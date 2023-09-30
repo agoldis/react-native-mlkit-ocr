@@ -4,9 +4,9 @@
   "description": "Google on-device MLKit text recognition for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
-  "react-native": "src/index.ts",
-  "source": "src/index.ts",
+  "types": "lib/typescript/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
   "files": [
     "src",
     "lib",

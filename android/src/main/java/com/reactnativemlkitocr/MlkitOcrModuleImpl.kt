@@ -77,6 +77,7 @@ class MlkitOcrModuleImpl {
             e.putString("text", element.text)
             e.putMap("bounding", getCoordinates(element.boundingBox))
             e.putArray("cornerPoints", getCornerPoints(element.cornerPoints))
+            e.putString("confidence", element.confidence.toString())
             lineElements.pushMap(e)
           }
           val l: WritableMap = Arguments.createMap()
@@ -85,6 +86,7 @@ class MlkitOcrModuleImpl {
           l.putMap("bounding", lCoordinates)
           l.putArray("elements", lineElements)
           l.putArray("cornerPoints", getCornerPoints(line.cornerPoints))
+          l.putString("confidence", line.confidence.toString())
 
           blockElements.pushMap(l)
         }
