@@ -1,6 +1,6 @@
 {
   "name": "react-native-mlkit-ocr",
-  "version": "0.3.5",
+  "version": "4.0.0",
   "description": "Google on-device MLKit text recognition for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
