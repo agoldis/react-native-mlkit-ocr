@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.source_files    = "ios/**/*.{h,m,mm}"
 
-  s.dependency "GoogleMLKit/TextRecognition", "2.6.0"
+  s.dependency "GoogleMLKit/TextRecognition", "3.2.0"
 
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1'
     folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
