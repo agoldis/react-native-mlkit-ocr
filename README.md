@@ -1,6 +1,13 @@
 # react-native-mlkit-ocr
 
-> I moved on to building https://currents.dev. Consider using [rn-mlkit-ocr](https://github.com/ahmeterenodaci/rn-mlkit-ocr)
+> ⚠️ The project is not active anymore. I moved on to building [currents.dev](https://currents.dev) - All-in-one Dashboard for Playwright Testing.
+>
+
+> Consider using [rn-mlkit-ocr](https://github.com/ahmeterenodaci/rn-mlkit-ocr).
+
+> Cheers!
+
+---
 
 <p align="center">
     Google on-device MLKit text recognition for React Native
