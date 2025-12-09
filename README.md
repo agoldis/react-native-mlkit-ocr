@@ -1,4 +1,7 @@
 # react-native-mlkit-ocr
+
+> I moved on to building https://currents.dev. Consider using [rn-mlkit-ocr](https://github.com/ahmeterenodaci/rn-mlkit-ocr)
+
 <p align="center">
     Google on-device MLKit text recognition for React Native
 </p>
